@@ -1,6 +1,8 @@
-#include <iostream>
+#include "PlatformEscape.h"
 
 int main(int argc, char *argv[]) {
-  std::cout << "Hello, World!\n";
+  Init();
+  Run();
+  Shutdown();
   return 0;
 }

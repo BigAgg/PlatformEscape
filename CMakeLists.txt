@@ -36,7 +36,8 @@ source_group("Header Files" FILES ${HEADER_FILES})
 
 # Building target 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib imgui::imgui rlImGui)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_link_libraries(${PROJECT_NAME} PUBLIC raylib imgui::imgui rlImGui)
 
 # Check if Generator is Visual studio
 if (CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -65,4 +66,21 @@ elseif(CMAKE_GENERATOR MATCHES "Ninja")
     )
   endif()
 endif()
+
+# set the source directory of resources
+set(RES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/res)
+
+# Copy the contents of the res folder to the build directory if there is one
+if(EXISTS ${RES_DIR})
+  message(STATUS "Resource folder fond: ${RES_DIR}")
+  add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${RES_DIR} $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    COMMENT "Copying resources to the build directory..."
+  )
+else()
+  # Skipping copying resources
+  message(STATUS "Resource folder not found: ${RES_DIR}. Skipping sesource copy.")
+endif()
+
 
