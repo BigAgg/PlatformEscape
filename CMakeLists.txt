@@ -53,7 +53,8 @@ elseif(CMAKE_GENERATOR MATCHES "Ninja")
       COMMAND ${CMAKE_COMMAND} -E copy 
         ${CMAKE_BINARY_DIR}/compile_commands.json
         ${CMAKE_SOURCE_DIR}/compile_commands.json
-      DEPENDS ${CMAKE_BINARY_DIR}/compile_commands.json
+      COMMENT "Copying compile_commands.json to source directory (windows)"
+      VERBATIM
     ) 
   else()
     # symlink compile_commands.json
@@ -62,7 +63,8 @@ elseif(CMAKE_GENERATOR MATCHES "Ninja")
       COMMAND ${CMAKE_COMMAND} -E create_symlink
         ${CMAKE_BINARY_DIR}/compile_commands.json
         ${CMAKE_SOURCE_DIR}/compile_commands.json
-      DEPENDS ${CMAKE_BINARY_DIR}/compile_commands.json
+      COMMENT "Symlinking compile_commands.json to source directory (Unix)"
+      VERBATIM
     )
   endif()
 endif()

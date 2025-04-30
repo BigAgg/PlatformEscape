@@ -1,3 +1,6 @@
 [submodule "external/rlimgui"]
 	path = external/rlimgui
 	url = https://github.com/raylib-extras/rlImGui
+[submodule "external/vcpkg"]
+	path = external/vcpkg
+	url = https://github.com/microsoft/vcpkg.git
