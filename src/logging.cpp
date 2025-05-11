@@ -25,6 +25,10 @@ namespace logging {
 	namespace fs = std::filesystem;
 
 	void log(const std::string& type, const std::string& msg) {
+		if (type == "ERROR") {
+			std::cerr << strings::GetTimestamp() << "\t" << type << ":\t" << msg << "\n";
+			logfile.flush();
+		}
 		std::cout << strings::GetTimestamp() << "\t" << type << ":\t" << msg << "\n";
 	}
 	void startlogging(const std::string& path, const std::string& filename) {

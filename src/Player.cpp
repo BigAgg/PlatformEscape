@@ -4,21 +4,25 @@
 
 static const int s_playerWidth = 16;
 static const int s_playerHeight = 16;
+static const int s_gravity = 800.0f;
 static const float s_speed = 200.0f;
 
 Player::Player(int health, Vector2 position) : m_health(health), m_position(position) {
 	m_alive = true;
 	m_grounded = false;
 	m_direction = { 0.0f, 0.0f };
+	m_hitbox.x = position.x;
+	m_hitbox.y = position.y;
+	m_hitbox.width = s_playerWidth;
+	m_hitbox.height = s_playerHeight;
 }
 
 void Player::Input() {
-	m_direction = { 0.0f, 0.0f };
-	if (IsKeyDown(KEY_W)) {
-		m_direction.y -= 1;
-	}
-	if (IsKeyDown(KEY_S)) {
-		m_direction.y += 1;
+	m_direction.x = 0.0f;	// Reset the x movement
+	// Checking for player inputs
+	if (IsKeyPressed(KEY_SPACE) && !IsGrounded()) {
+		m_direction.y = -400.0f;
+		Ground(false);
 	}
 	if (IsKeyDown(KEY_A)) {
 		m_direction.x -= 1;
@@ -29,13 +33,22 @@ void Player::Input() {
 }
 
 void Player::Update(float deltatime){
-	m_direction *= m_directionOffset;
-	m_direction = Vector2Normalize(m_direction);
-	m_position += (m_direction * s_speed * deltatime);
+	// Updateing the direction
+	m_direction.y += deltatime * s_gravity;
+	if (m_direction.y > 800)
+		m_direction.y = 800;
+
+	Vector2 computedDirection = m_direction;
+	computedDirection *= m_directionOffset;
+
+	m_hitbox.x += computedDirection.x * s_speed * deltatime;
+	if (!IsGrounded())
+		m_hitbox.y += computedDirection.y * deltatime;
+
 }
 
 void Player::Render(){
-	DrawRectangleV({ m_position.x - s_playerWidth / 2, m_position.y - s_playerHeight / 2 }, { s_playerWidth, s_playerHeight }, RED);
+	DrawRectangleRec(m_hitbox, RED);
 }
 
 void Player::Ground(bool grounded){
@@ -65,11 +78,12 @@ int Player::Health(){
 }
 
 void Player::SetPosition(Vector2 position){
-	m_position = position;
+	m_hitbox.x = position.x;
+	m_hitbox.y = position.y;
 }
 
 Vector2 Player::GetPosition(){
-	return m_position;
+	return Vector2(m_hitbox.x, m_hitbox.y);
 }
 
 void Player::SetDirection(Vector2 direction){

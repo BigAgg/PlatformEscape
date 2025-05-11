@@ -32,7 +32,6 @@ private:
 	int m_health;
 	Vector2 m_direction;
 	Vector2 m_directionOffset = { 1.0f, 1.0f };
-	Vector2 m_velocity = { 0.0f, 1.0f };
-	Vector2 m_velocityOffset = { 1.0f, 1.0f };
 	Vector2 m_position;
+	Rectangle m_hitbox;
 };
