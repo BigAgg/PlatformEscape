@@ -7,13 +7,25 @@ set(PROJECT_VERSION "0.0.1")
 set(CMAKE_CXX_STANDARD 20)
 
 # Setting up Flags
-set(CMAKE_EXPORT_COMPLE_COMMANDS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Setting up output directory for built objects
+# Makes sure that dynamic library goes into the build directory automatically
+if (CMAKE_GENERATOR MATCHES "Visual Studio")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+endif()
+if (CMAKE_GENERATOR MATCHES "Ninja")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()
 
 # Setting compile definitions
 add_compile_definitions(VERSION="${PROJECT_VERSION}")
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 
-# Add raylib
+# Add Raylib
+find_package(glfw3 CONFIG REQUIRED)
 find_package(raylib CONFIG REQUIRED)
 
 # Adding ImGui
@@ -37,7 +49,18 @@ source_group("Header Files" FILES ${HEADER_FILES})
 # Building target 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib imgui::imgui rlImGui)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+      raylib
+      imgui::imgui
+      rlImGui
+      glfw   # or glfw3 if needed
+
+      # Windows system libs (required for Raylib static build)
+      winmm
+      gdi32
+      opengl32
+)
 
 # Check if Generator is Visual studio
 if (CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -84,5 +107,4 @@ else()
   # Skipping copying resources
   message(STATUS "Resource folder not found: ${RES_DIR}. Skipping sesource copy.")
 endif()
-
 
