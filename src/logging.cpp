@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <format>
 
 namespace strings {
 bool ends_with(const std::string &value, const std::string &ending) {
@@ -15,7 +16,16 @@ bool ends_with(const std::string &value, const std::string &ending) {
 
 std::string GetTimestamp() {
   const auto now = std::chrono::system_clock::now();
+#ifdef WIN32
   return std::format("{:%d-%m-%Y %H:%M:%OS}", now);
+#else
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::localtime(&time); // use std::gmtime(&time) for UTC
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%d-%m-%Y %H:%M:%S");
+    return oss.str();
+#endif
 }
 } // namespace strings
 

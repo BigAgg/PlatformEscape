@@ -66,6 +66,8 @@ void Init() {
   HandleWindowSettingChange();
   // Init ImGui
   rlImGuiSetup(true);
+  ImGuiIO& io = ImGui::GetIO();
+  io.IniFilename = nullptr;
 }
 
 void LoadSettings() {

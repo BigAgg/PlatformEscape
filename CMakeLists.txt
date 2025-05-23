@@ -25,8 +25,8 @@ add_compile_definitions(VERSION="${PROJECT_VERSION}")
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 
 # Add Raylib
-find_package(glfw3 CONFIG REQUIRED)
 find_package(raylib CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 
 # Adding ImGui
 find_package(imgui CONFIG REQUIRED)
@@ -37,7 +37,7 @@ add_library(rlImGui STATIC
   ${RLIMGUI_DIR}/rlImGui.cpp
 )
 target_include_directories(rlImGui PUBLIC ${RLIMGUI_DIR})
-target_link_libraries(rlImGui PUBLIC raylib imgui::imgui)
+target_link_libraries(rlImGui PUBLIC raylib glfw imgui::imgui)
 
 # File organization (for visual studio)
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.c) 
@@ -49,18 +49,28 @@ source_group("Header Files" FILES ${HEADER_FILES})
 # Building target 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE
+if(WIN32)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        raylib
+        imgui::imgui
+        rlImGui
+        glfw   # or glfw3 if needed
+
+        # Windows system libs (required for Raylib static build)
+        winmm
+        gdi32
+        opengl32
+  )
+else()
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
       raylib
+      glfw
       imgui::imgui
       rlImGui
-      glfw   # or glfw3 if needed
-
-      # Windows system libs (required for Raylib static build)
-      winmm
-      gdi32
-      opengl32
-)
+  )
+endif()
 
 # Check if Generator is Visual studio
 if (CMAKE_GENERATOR MATCHES "Visual Studio")
