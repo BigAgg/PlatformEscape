@@ -9,6 +9,7 @@ It is written in C++ using [Raylib](https://www.raylib.com/), [ImGui](https://gi
 ## Cloning the repo:
 ```sh
 git clone --recurse-submodules https://github.com/BigAgg/PlatformEscape.git
+cd PlatformEscape
 git submodule update --init
 ```
 
@@ -18,9 +19,17 @@ git submodule update --init
 - [CMake](https://cmake.org/) Version 3.8 or higher
 - Any c++ Compiler that supports c++20 or higher like gcc
 
+### Linux:
+***Rquirement***:
+- [CMake](https://cmake.org/) Version 3.8 or higher
+- Any c++ Compiler that supports c++20 or higher like gcc
+- [Ninja](https://ninja-build.org/)
+
 #### Preparing the Project:
 Simply run the *setup.sh* file. It installs all Dependencies and sets up the Project.\
-If you are using **Visual Studio**, it generates a *.sln* inside the build directory that is ready to use.
+If you are using **Visual Studio**, it generates a *.sln* inside the build directory that is ready to use.\
+If you want to build it with [Ninja](https://ninja-build.org/) on windows simply run the *ninja_setup.sh* file.\
+Or if you want to build on Linux simply run the *unix_setup.sh* file.
 
 #### Compiling and Building using Visual Studio:
 Enter the *build* directory and type following command:
@@ -30,11 +39,11 @@ cmake --build . --config Release
 The executable can now be found inside the *Release* directory.
 
 #### Compiling and Building using Ninja:
-Enter the *build* directory and type following command:
+Enter the *build/Release* or *build/Debug* directory and type following command:
 ```sh
 ninja
 ```
-The executable can now be found inside the entered *build* directory
+The executable can now be found inside the newly created *bin* directory
 
 
 ## Resources
